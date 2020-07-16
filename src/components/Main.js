@@ -1,5 +1,5 @@
 import React from 'react';
-import { api } from '../utils/Api';
+import { api } from '../utils/api';
 import Card from './Card';
 
 class Main extends React.Component {
@@ -31,7 +31,7 @@ class Main extends React.Component {
 
   onCardClick = (cardData) => {
     this.props.handleCardClick(cardData);
-  }
+  };
 
   render() {
     return (
@@ -65,7 +65,14 @@ class Main extends React.Component {
         </section>
         <ul className='elements'>
           {this.state.cards.map((card, i) => (
-            <Card key={i} card={card} name={card.name} link={card.link} likes={card.likes} onCardClick={this.onCardClick}/>
+            <Card
+              key={i}
+              card={card}
+              name={card.name}
+              link={card.link}
+              likes={card.likes}
+              onCardClick={this.onCardClick}
+            />
           ))}
         </ul>
       </div>
