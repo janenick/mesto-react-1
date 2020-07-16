@@ -3,6 +3,7 @@ import './index.css';
 import Header from './components/Header';
 import Main from './components/Main';
 import PopupWithForm from './components/PopupWithForm';
+import ImagePopup from './components/ImagePopup';
 import Footer from './components/Footer';
 
 class App extends React.Component {
@@ -13,6 +14,7 @@ class App extends React.Component {
       isEditProfilePopupOpen: false,
       isAddPlacePopupOpen: false,
       isEditAvatarPopupOpen: false,
+      selectedCard: { isImageOpen: false, link: '', name: '' },
     };
   }
 
@@ -28,11 +30,18 @@ class App extends React.Component {
     this.setState({ isAddPlacePopupOpen: true });
   };
 
+  handleCardClick = (card) => {
+    this.setState({
+      selectedCard: { isImageOpen: true, link: card.link, name: card.name },
+    });
+  };
+
   closeAllPopups = () => {
     this.setState({
       isEditProfilePopupOpen: false,
       isAddPlacePopupOpen: false,
       isEditAvatarPopupOpen: false,
+      selectedCard: { isImageOpen: false, link: '', name: '' },
     });
   };
 
@@ -44,6 +53,7 @@ class App extends React.Component {
           onEditProfile={this.handleEditProfileClick}
           onAddPlace={this.handleAddPlaceClick}
           onEditAvatar={this.handleEditAvatarClick}
+          handleCardClick={this.handleCardClick}
         />
         <Footer />
 
@@ -88,6 +98,7 @@ class App extends React.Component {
           title='Новое место'
           submit='Создать'
           isOpen={this.state.isAddPlacePopupOpen}
+          onClose={this.closeAllPopups}
         >
           <label htmlFor='name' className='popup__field'>
             <input
@@ -119,6 +130,7 @@ class App extends React.Component {
           title='Обновить аватар'
           submit='Сохранить'
           isOpen={this.state.isEditAvatarPopupOpen}
+          onClose={this.closeAllPopups}
         >
           <label htmlFor='url' className='popup__field'>
             <input
@@ -137,21 +149,15 @@ class App extends React.Component {
           name='delete'
           title='Вы уверены?'
           submit='Да'
+          onClose={this.closeAllPopups}
         ></PopupWithForm>
 
-        <template id='card-template'>
-          <li className='card'>
-            <button type='button' className='card__delete button'></button>
-            <div className='card__container'>
-              <img src='#' alt='' className='card__photo' />
-            </div>
-            <h2 className='card__caption'>#</h2>
-            <div className='card__like-block'>
-              <button type='button' className='card__like button'></button>
-              <span className='card__counter'></span>
-            </div>
-          </li>
-        </template>
+        <ImagePopup
+          name={this.state.selectedCard.name}
+          link={this.state.selectedCard.link}
+          onClose={this.closeAllPopups}
+          isOpen={this.state.selectedCard.isImageOpen}
+        />
       </div>
     );
   }
