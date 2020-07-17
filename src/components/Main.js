@@ -1,5 +1,5 @@
 import React from 'react';
-import { api } from '../utils/api';
+import { api } from '../utils/Api';
 import Card from './Card';
 
 class Main extends React.Component {
@@ -7,26 +7,24 @@ class Main extends React.Component {
     super(props);
 
     this.state = {
-      userName: this.props.userName,
-      userDescription: this.props.userDescription,
-      userAvatar: this.props.userAvatar,
+      userName: '',
+      userDescription: '',
+      userAvatar: '',
       cards: [],
     };
   }
 
   componentDidMount() {
-    api.getUserInfo().then((data) => {
-      this.setState({
-        userName: data.name,
-        userDescription: data.about,
-        userAvatar: data.avatar,
-      });
-    });
-    api.getInitialCards().then((data) => {
-      this.setState({
-        cards: data,
-      });
-    });
+    Promise.all([api.getUserInfo(), api.getInitialCards()])
+      .then((data) => {
+        this.setState({
+          userName: data[0].name,
+          userDescription: data[0].about,
+          userAvatar: data[0].avatar,
+          cards: data[1],
+        });
+      })
+      .catch((err) => console.log(`Ошибка: ${err}`));
   }
 
   onCardClick = (cardData) => {
@@ -67,10 +65,7 @@ class Main extends React.Component {
           {this.state.cards.map((card, i) => (
             <Card
               key={i}
-              card={card}
-              name={card.name}
-              link={card.link}
-              likes={card.likes}
+              card={card}              
               onCardClick={this.onCardClick}
             />
           ))}
