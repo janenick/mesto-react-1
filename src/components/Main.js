@@ -27,8 +27,8 @@ class Main extends React.Component {
       .catch((err) => console.log(`Ошибка: ${err}`));
   }
 
-  onCardClick = (cardData) => {
-    this.props.handleCardClick(cardData);
+  onCardClick = (card) => {
+    this.props.handleCardClick(card);
   };
 
   render() {
@@ -63,11 +63,7 @@ class Main extends React.Component {
         </section>
         <ul className='elements'>
           {this.state.cards.map((card, i) => (
-            <Card
-              key={i}
-              card={card}              
-              onCardClick={this.onCardClick}
-            />
+            <Card key={i} card={card} onCardClick={this.onCardClick} />
           ))}
         </ul>
       </div>

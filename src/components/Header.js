@@ -1,17 +1,15 @@
 import React from 'react';
 import logoPath from '../images/header/logo.svg';
 
-class Header extends React.Component {
-  render() {
-    return (
-      <header className='header'>
-        <img src={logoPath} alt='Логотип сайта' className='logo' />
-        <h1 className='visually-hidden'>
-          Место: интерактивный сервис для добавления фотографий
-        </h1>
-      </header>
-    );
-  }
+function Header() {
+  return (
+    <header className='header'>
+      <img src={logoPath} alt='Логотип сайта' className='logo' />
+      <h1 className='visually-hidden'>
+        Место: интерактивный сервис для добавления фотографий
+      </h1>
+    </header>
+  );
 }
 
 export default Header;
