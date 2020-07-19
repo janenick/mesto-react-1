@@ -16,12 +16,12 @@ class Main extends React.Component {
 
   componentDidMount() {
     Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then((data) => {
+      .then(([userData, cardData]) => {
         this.setState({
-          userName: data[0].name,
-          userDescription: data[0].about,
-          userAvatar: data[0].avatar,
-          cards: data[1],
+          userName: userData.name,
+          userDescription: userData.about,
+          userAvatar: userData.avatar,
+          cards: cardData,
         });
       })
       .catch((err) => console.log(`Ошибка: ${err}`));
@@ -62,8 +62,8 @@ class Main extends React.Component {
           ></button>
         </section>
         <ul className='elements'>
-          {this.state.cards.map((card, i) => (
-            <Card key={i} card={card} onCardClick={this.onCardClick} />
+          {this.state.cards.map((card) => (
+            <Card key={card._id} card={card} onCardClick={this.onCardClick} />
           ))}
         </ul>
       </div>
