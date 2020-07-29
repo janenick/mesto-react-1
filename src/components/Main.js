@@ -1,26 +1,23 @@
 import React from 'react';
 import { api } from '../utils/Api';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import Card from './Card';
 
 class Main extends React.Component {
+  static contextType = CurrentUserContext;
   constructor(props) {
     super(props);
 
     this.state = {
-      userName: '',
-      userDescription: '',
-      userAvatar: '',
       cards: [],
     };
   }
 
   componentDidMount() {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userData, cardData]) => {
+    api
+      .getInitialCards()
+      .then((cardData) => {
         this.setState({
-          userName: userData.name,
-          userDescription: userData.about,
-          userAvatar: userData.avatar,
           cards: cardData,
         });
       })
@@ -37,7 +34,7 @@ class Main extends React.Component {
         <section className='profile'>
           <div className='profile__avatar-overlay'>
             <img
-              src={this.state.userAvatar}
+              src={this.context.avatar}
               alt='Аватар пользователя'
               className='profile__avatar'
             />
@@ -52,8 +49,8 @@ class Main extends React.Component {
               className='button profile__button profile__button_action_edit'
               onClick={this.props.onEditProfile}
             ></button>
-            <p className='profile__name'>{this.state.userName}</p>
-            <p className='profile__about'>{this.state.userDescription}</p>
+            <p className='profile__name'>{this.context.name}</p>
+            <p className='profile__about'>{this.context.about}</p>
           </div>
           <button
             type='button'
