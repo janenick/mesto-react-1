@@ -1,4 +1,4 @@
-import {apiOptions} from './utils';
+import { apiOptions } from './utils';
 
 class Api {
   constructor(options) {
@@ -50,6 +50,12 @@ class Api {
       }),
       headers: this._headers,
     });
+  }
+
+  changeLikeCardStatus(id, isLiked) {
+    if (isLiked === true) {
+      this.dislikeCard(id);
+    } else this.likeCard(id);
   }
 
   //Лайк
