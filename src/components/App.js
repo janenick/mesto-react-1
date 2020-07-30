@@ -61,11 +61,10 @@ function App() {
   }
 
   function handleUpdateAvatar(newAvatar) {
-    const url = newAvatar.avatar;
-    console.log(url)
-    
-
-    
+    api.updateUserAvatar(newAvatar).then((res) => {
+      setCurrentUser(res);
+      closeAllPopups();
+    });
   }
 
   function handleUpdateUser(newUser) {
