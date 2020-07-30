@@ -53,9 +53,10 @@ class Api {
   }
 
   changeLikeCardStatus(id, isLiked) {
-    if (isLiked === true) {
-      this.dislikeCard(id);
-    } else this.likeCard(id);
+    return this._sendRequest(`cards/likes/${id}`, {
+      method: `${isLiked ? 'PUT' : 'DELETE'}`,
+      headers: this._headers,
+    });
   }
 
   //Лайк

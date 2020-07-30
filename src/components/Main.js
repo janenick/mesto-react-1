@@ -16,9 +16,19 @@ function Main(props) {
       .catch((err) => console.log(`Ошибка: ${err}`));
   }, []);
 
-  function onCardClick(card) {
-    props.handleCardClick(card);
-  };
+  function onCardClick(cardData) {
+    props.handleCardClick(cardData);
+  }
+
+  function handleCardLike(cardData) {
+    const { card } = cardData;
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
+      console.log(newCard);
+      const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
+      setCards(newCards);
+    }).catch((err) => console.log(`Ошибка при попытке поставить/снять лайк: ${err}`));
+  }
 
   return (
     <div className='main'>
@@ -51,7 +61,7 @@ function Main(props) {
       </section>
       <ul className='elements'>
         {cards.map((card) => (
-          <Card key={card._id} card={card} onCardClick={onCardClick} />
+          <Card key={card._id} card={card} onCardClick={onCardClick} onCardLike={handleCardLike} />
         ))}
       </ul>
     </div>
