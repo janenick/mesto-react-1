@@ -5,6 +5,7 @@ import { api } from '../utils/Api';
 import Header from './Header';
 import Main from './Main';
 import PopupWithForm from './PopupWithForm';
+import EditProfilePopup from './EditProfilePopup';
 import ImagePopup from './ImagePopup';
 import Footer from './Footer';
 
@@ -70,41 +71,7 @@ function App() {
         />
         <Footer />
 
-        <PopupWithForm
-          name='user'
-          title='Редактировать профиль'
-          submit='Сохранить'
-          isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopups}
-        >
-          <label htmlFor='name' className='popup__field'>
-            <input
-              type='text'
-              className='popup__input'
-              id='name'
-              name='name'
-              placeholder='Имя'
-              minLength='2'
-              maxLength='40'
-              pattern='[А-Яа-яA-Za-z -]{1,}'
-              required
-            />
-            <span className='popup__input-error' id='name-error'></span>
-          </label>
-          <label htmlFor='about' className='popup__field'>
-            <input
-              type='text'
-              className='popup__input'
-              id='about'
-              name='about'
-              placeholder='О себе'
-              minLength='2'
-              maxLength='200'
-              required
-            />
-            <span className='popup__input-error' id='about-error'></span>
-          </label>
-        </PopupWithForm>
+        <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
 
         <PopupWithForm
           name='photo'

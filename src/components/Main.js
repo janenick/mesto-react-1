@@ -24,7 +24,6 @@ function Main(props) {
     const { card } = cardData;
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
     api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
-      console.log(newCard);
       const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
       setCards(newCards);
     }).catch((err) => console.log(`Ошибка при попытке поставить/снять лайк: ${err}`));
