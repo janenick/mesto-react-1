@@ -60,7 +60,7 @@ class Api {
   }
 
   //Удалить фото
-  deletePhoto(id) {
+  deleteCard(id) {
     return this._sendRequest(`cards/${id}`, {
       method: 'DELETE',
       headers: this._headers,

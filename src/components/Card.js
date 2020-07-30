@@ -3,7 +3,7 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function Card(props) {
   const currentUser = React.useContext(CurrentUserContext);
-  const { card } = props;
+  const { card, onCardClick, onCardLike, onCardDelete } = props;
   const isOwn = card.owner._id === currentUser._id;
   const cardDeleteButtonClassName = `${
     isOwn ? 'card__delete ' : 'card__delete_hidden'
@@ -14,16 +14,20 @@ function Card(props) {
   }`;
 
   function handleClick() {
-    props.onCardClick(props);
+    onCardClick(props);
   }
 
   function handleLikeClick() {
-    props.onCardLike(props);
+    onCardLike(props);
+  }
+
+  function handleDeleteClick() {
+    onCardDelete(props);
   }
   
   return (
     <li className='card'>
-      <button type='button' className={cardDeleteButtonClassName}></button>
+      <button type='button' className={cardDeleteButtonClassName} onClick={handleDeleteClick}></button>
       <div className='card__container'>
         <img
           src={card.link}

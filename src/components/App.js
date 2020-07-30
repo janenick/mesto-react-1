@@ -20,8 +20,17 @@ function App() {
     link: '',
     name: '',
   });
-
+  const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
+
+  React.useEffect(() => {
+    api
+      .getInitialCards()
+      .then((cardData) => {
+        setCards(cardData);
+      })
+      .catch((err) => console.log(`Ошибка: ${err}`));
+  }, [cards]);
 
   React.useEffect(() => {
     api
@@ -31,6 +40,28 @@ function App() {
       })
       .catch((err) => console.log(`Произошла ошибка: ${err}`));
   }, []);
+
+  function handleCardLike(cardData) {
+    const { card } = cardData;
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    api
+      .changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        const newCards = cards.map((c) => (c._id === card._id ? newCard : c));
+        setCards(newCards);
+      })
+      .catch((err) =>
+        console.log(`Ошибка при попытке поставить/снять лайк: ${err}`)
+      );
+  }
+
+  function handleCardDelete(cardData) {
+    const { card } = cardData;
+    api
+      .deleteCard(card._id)
+      .then(() => setCards(cards.filter((item) => item === card)))
+      .catch((err) => console.log(`Ошибка при удалении карточки: ${err}`));
+  }
 
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
@@ -67,16 +98,24 @@ function App() {
     });
   }
 
-  function handleUpdateUser(newUser) {
+  function handleUpdateUser(userData) {
     api
-      .updateUserInfo(newUser)
-      .then((res) => {
-        setCurrentUser(res);
-        closeAllPopups();
-      })
+      .updateUserInfo(userData)
+      .then((newUser) => setCurrentUser(newUser))
       .catch(
         (err) => `Ошибка при обновлении информации о пользователе: ${err}`
       );
+    closeAllPopups();
+  }
+
+  function handleAddPlace(cardData) {
+    api
+      .addNewCard(cardData)
+      .then((newCard) => setCards([...cards, newCard]))
+      .catch((err) =>
+        console.log(`Ошибка при добавлении новой карточки: ${err}`)
+      );
+    closeAllPopups();
   }
 
   return (
@@ -84,10 +123,13 @@ function App() {
       <div className='page'>
         <Header />
         <Main
+          cards={cards}
+          onCardClick={handleCardClick}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
           onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
           onEditAvatar={handleEditAvatarClick}
-          handleCardClick={handleCardClick}
         />
         <Footer />
 
@@ -101,7 +143,11 @@ function App() {
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
         />
-        <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} />
+        <AddPlacePopup
+          isOpen={isAddPlacePopupOpen}
+          onClose={closeAllPopups}
+          onAddPlace={handleAddPlace}
+        />
         <ConfirmCardDeletePopup onClose={closeAllPopups} />
 
         <ImagePopup
