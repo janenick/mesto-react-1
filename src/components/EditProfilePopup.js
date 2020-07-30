@@ -1,16 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PopupWithForm from './PopupWithForm';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function EditProfilePopup(props) {
   const { isOpen, onClose } = props;
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const currentUser = React.useContext(CurrentUserContext);
+
+  React.useEffect(() => {
+    setName(currentUser.name);
+    setDescription(currentUser.about);
+  }, [currentUser]);
+
+  function handleChange(evt) {
+    evt.target.name === 'name' ? setName(evt.target.value) : setDescription(evt.target.value);
+  }
+
+  function handleSubmit(evt) {
+    evt.preventDefault();
+    props.onUpdateUser({
+      name,
+      about: description,
+    });
+  }
 
   return (
     <PopupWithForm
       name='user'
       title='Редактировать профиль'
-      submit='Сохранить'
+      submitButtonText='Сохранить'
       isOpen={isOpen}
       onClose={onClose}
+      onSubmit={handleSubmit}
     >
       <label htmlFor='name' className='popup__field'>
         <input
@@ -18,11 +40,13 @@ function EditProfilePopup(props) {
           className='popup__input'
           id='name'
           name='name'
+          value={name}
           placeholder='Имя'
           minLength='2'
           maxLength='40'
           pattern='[А-Яа-яA-Za-z -]{1,}'
           required
+          onChange={handleChange}
         />
         <span className='popup__input-error' id='name-error'></span>
       </label>
@@ -32,10 +56,12 @@ function EditProfilePopup(props) {
           className='popup__input'
           id='about'
           name='about'
+          value={description}
           placeholder='О себе'
           minLength='2'
           maxLength='200'
           required
+          onChange={handleChange}
         />
         <span className='popup__input-error' id='about-error'></span>
       </label>

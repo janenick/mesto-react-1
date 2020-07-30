@@ -1,30 +1,37 @@
 import React from 'react';
 
 function PopupWithForm(props) {
+  const {
+    isOpen,
+    onSubmit,
+    onClose,
+    name,
+    title,
+    children,
+    submitButtonText,
+  } = props;
+
   return (
-    <div
-      className={`popup popup_type_${props.name} ${
-        props.isOpen && 'popup_opened'
-      }`}
-    >
+    <div className={`popup popup_type_${name} ${isOpen && 'popup_opened'}`}>
       <form
-        className={`popup__container popup__container_type_${props.name}`}
-        name={props.name}
+        className={`popup__container popup__container_type_${name}`}
+        name={name}
+        onSubmit={onSubmit}
       >
         <button
           type='reset'
           className='button button_close popup__button popup__button_close'
-          onClick={props.onClose}
+          onClick={onClose}
         ></button>
         <fieldset className='popup__input-container'>
-          <legend className='popup__heading'>{props.title}</legend>
-          {props.children}
+          <legend className='popup__heading'>{title}</legend>
+          {children}
         </fieldset>
         <button
           type='submit'
           className='button popup__button popup__button_submit'
         >
-          {props.submit}
+          {submitButtonText}
         </button>
       </form>
     </div>

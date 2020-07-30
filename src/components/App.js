@@ -4,8 +4,10 @@ import '../index.css';
 import { api } from '../utils/Api';
 import Header from './Header';
 import Main from './Main';
-import PopupWithForm from './PopupWithForm';
 import EditProfilePopup from './EditProfilePopup';
+import EditAvatarPopup from './EditAvatarPopup';
+import AddPlacePopup from './AddPlacePopup';
+import ConfirmCardDeletePopup from './ConfirmCardDeletePopup';
 import ImagePopup from './ImagePopup';
 import Footer from './Footer';
 
@@ -29,7 +31,6 @@ function App() {
       })
       .catch((err) => console.log(`Произошла ошибка: ${err}`));
   }, []);
-
 
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
@@ -59,6 +60,13 @@ function App() {
     });
   }
 
+  function handleUpdateUser(newUser) {
+    api.updateUserInfo(newUser).then((res) => {
+      setCurrentUser(res);
+      closeAllPopups();
+    }).catch((err) => `Ошибка при обновлении информации о пользователе: ${err}`);
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className='page'>
@@ -71,66 +79,17 @@ function App() {
         />
         <Footer />
 
-        <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} />
-
-        <PopupWithForm
-          name='photo'
-          title='Новое место'
-          submit='Создать'
-          isOpen={isAddPlacePopupOpen}
+        <EditProfilePopup
+          isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
-        >
-          <label htmlFor='name' className='popup__field'>
-            <input
-              className='popup__input'
-              id='name'
-              name='name'
-              placeholder='Название'
-              minLength='1'
-              maxLength='30'
-              required
-            />
-            <span className='popup__input-error' id='name-error'></span>
-          </label>
-          <label htmlFor='link' className='popup__field'>
-            <input
-              type='url'
-              className='popup__input'
-              id='link'
-              name='link'
-              placeholder='Ссылка на картинку'
-              required
-            />
-            <span className='popup__input-error' id='link-error'></span>
-          </label>
-        </PopupWithForm>
-
-        <PopupWithForm
-          name='avatar'
-          title='Обновить аватар'
-          submit='Сохранить'
+          onUpdateUser={handleUpdateUser}
+        />
+        <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
-        >
-          <label htmlFor='url' className='popup__field'>
-            <input
-              type='url'
-              className='popup__input'
-              id='url'
-              name='url'
-              placeholder='Ссылка на аватар'
-              required
-            />
-            <span className='popup__input-error' id='url-error'></span>
-          </label>
-        </PopupWithForm>
-
-        <PopupWithForm
-          name='delete'
-          title='Вы уверены?'
-          submit='Да'
-          onClose={closeAllPopups}
-        ></PopupWithForm>
+        />
+        <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} />
+        <ConfirmCardDeletePopup onClose={closeAllPopups} />
 
         <ImagePopup
           name={selectedCard.name}

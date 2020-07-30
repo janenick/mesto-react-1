@@ -59,22 +59,6 @@ class Api {
     });
   }
 
-  //Лайк
-  likeCard(id) {
-    return this._sendRequest(`cards/likes/${id}`, {
-      method: 'PUT',
-      headers: this._headers,
-    });
-  }
-
-  //Дизлайк
-  dislikeCard(id) {
-    return this._sendRequest(`cards/likes/${id}`, {
-      method: 'DELETE',
-      headers: this._headers,
-    });
-  }
-
   //Удалить фото
   deletePhoto(id) {
     return this._sendRequest(`cards/${id}`, {
