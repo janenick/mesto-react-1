@@ -6,7 +6,7 @@ function ConfirmCardDeletePopup(props) {
 
   return (
     <PopupWithForm
-      name='delete'
+      formName='delete'
       title='Вы уверены?'
       submitButtonText='Да'
       onClose={onClose}

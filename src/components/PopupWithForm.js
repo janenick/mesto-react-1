@@ -5,17 +5,17 @@ function PopupWithForm(props) {
     isOpen,
     onSubmit,
     onClose,
-    name,
+    formName,
     title,
     children,
     submitButtonText,
   } = props;
 
   return (
-    <div className={`popup popup_type_${name} ${isOpen && 'popup_opened'}`}>
+    <div className={`popup popup_type_${formName} ${isOpen && 'popup_opened'}`}>
       <form
-        className={`popup__container popup__container_type_${name}`}
-        name={name}
+        className={`popup__container popup__container_type_${formName}`}
+        name={formName}
         onSubmit={onSubmit}
       >
         <button

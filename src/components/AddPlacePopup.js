@@ -1,13 +1,12 @@
 import React from 'react';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import PopupWithForm from './PopupWithForm';
 
 function AddPlacePopup(props) {
   const { isOpen, onClose } = props;
-    
+
   return (
     <PopupWithForm
-      name='photo'
+      formName='photo'
       title='Новое место'
       submitButtonText='Создать'
       isOpen={isOpen}

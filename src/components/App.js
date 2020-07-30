@@ -60,11 +60,24 @@ function App() {
     });
   }
 
+  function handleUpdateAvatar(newAvatar) {
+    const url = newAvatar.avatar;
+    console.log(url)
+    
+
+    
+  }
+
   function handleUpdateUser(newUser) {
-    api.updateUserInfo(newUser).then((res) => {
-      setCurrentUser(res);
-      closeAllPopups();
-    }).catch((err) => `Ошибка при обновлении информации о пользователе: ${err}`);
+    api
+      .updateUserInfo(newUser)
+      .then((res) => {
+        setCurrentUser(res);
+        closeAllPopups();
+      })
+      .catch(
+        (err) => `Ошибка при обновлении информации о пользователе: ${err}`
+      );
   }
 
   return (
@@ -87,6 +100,7 @@ function App() {
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar}
         />
         <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} />
         <ConfirmCardDeletePopup onClose={closeAllPopups} />
