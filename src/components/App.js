@@ -7,7 +7,7 @@ import Main from './Main';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
-import ConfirmCardDeletePopup from './ConfirmCardDeletePopup';
+import ConfirmPopup from './ConfirmPopup';
 import ImagePopup from './ImagePopup';
 import Footer from './Footer';
 
@@ -22,27 +22,33 @@ function App() {
   });
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
+  const [isConfirmPopupOpen, setConfirmPopupOpen] = useState(false);
+  const [cardToDelete, setCardToDelete] = useState({});
 
-  React.useEffect(() => {
-    api
-      .getInitialCards()
-      .then((cardData) => {
-        setCards(cardData);
-      })
-      .catch((err) => console.log(`Ошибка: ${err}`));
-  }, [cards]);
-
+  //Получить данные пользователя
   React.useEffect(() => {
     api
       .getUserInfo()
       .then((res) => {
         setCurrentUser(res);
       })
-      .catch((err) => console.log(`Произошла ошибка: ${err}`));
+      .catch((err) =>
+        console.log(`Ошибка при загрузке информации о пользователе: ${err}`)
+      );
   }, []);
 
-  function handleCardLike(cardData) {
-    const { card } = cardData;
+  //Получить карточки
+  React.useEffect(() => {
+    api
+      .getInitialCards()
+      .then((cardData) => {
+        setCards(cardData);
+      })
+      .catch((err) => console.log(`Ошибка при загрузке карточек: ${err}`));
+  }, [cards]);
+
+  //Лайк/дизлайк карточки
+  function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
     api
       .changeLikeCardStatus(card._id, !isLiked)
@@ -55,31 +61,43 @@ function App() {
       );
   }
 
-  function handleCardDelete(cardData) {
-    const { card } = cardData;
+  //Удалить карточку после подтверждения
+  function handleConfirm() {
     api
-      .deleteCard(card._id)
-      .then(() => setCards(cards.filter((item) => item === card)))
+      .deleteCard(cardToDelete._id)
+      .then(() => setCards(cards.filter((item) => item === cardToDelete)))
       .catch((err) => console.log(`Ошибка при удалении карточки: ${err}`));
+    closeAllPopups();
   }
 
+  //Кликнуть на удаление карточки
+  function handleCardDelete(card) {
+    setConfirmPopupOpen(true);
+    setCardToDelete(card);
+  }
+
+  //Открыть AvatarPopup
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
   }
 
+  //Открыть EditProfilePopup
   function handleEditProfileClick() {
     setEditProfilePopupOpen(true);
   }
 
+  //Открыть AddPlacePopup
   function handleAddPlaceClick() {
     setAddPlacePopupOpen(true);
   }
 
-  function handleCardClick(cardData) {
-    const { link, name } = cardData.card;
+  //Открыть увеличенное фото
+  function handleCardClick(card) {
+    const { link, name } = card;
     setSelectedCard({ isImageOpen: true, link: link, name: name });
   }
 
+  //Закрыть все попапы
   function closeAllPopups() {
     setEditProfilePopupOpen(false);
     setEditAvatarPopupOpen(false);
@@ -89,8 +107,10 @@ function App() {
       link: '',
       name: '',
     });
+    setConfirmPopupOpen(false);
   }
 
+  //Обновить аватар
   function handleUpdateAvatar(newAvatar) {
     api.updateUserAvatar(newAvatar).then((res) => {
       setCurrentUser(res);
@@ -98,6 +118,7 @@ function App() {
     });
   }
 
+  //Обновить данные пользователя
   function handleUpdateUser(userData) {
     api
       .updateUserInfo(userData)
@@ -108,9 +129,10 @@ function App() {
     closeAllPopups();
   }
 
-  function handleAddPlace(cardData) {
+  //Добавить карточку
+  function handleAddPlace(card) {
     api
-      .addNewCard(cardData)
+      .addNewCard(card)
       .then((newCard) => setCards([...cards, newCard]))
       .catch((err) =>
         console.log(`Ошибка при добавлении новой карточки: ${err}`)
@@ -148,7 +170,11 @@ function App() {
           onClose={closeAllPopups}
           onAddPlace={handleAddPlace}
         />
-        <ConfirmCardDeletePopup onClose={closeAllPopups} />
+        <ConfirmPopup
+          isOpen={isConfirmPopupOpen}
+          onClose={closeAllPopups}
+          onConfirmDelete={handleConfirm}
+        />
 
         <ImagePopup
           name={selectedCard.name}

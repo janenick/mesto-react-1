@@ -14,20 +14,24 @@ function Card(props) {
   }`;
 
   function handleClick() {
-    onCardClick(props);
+    onCardClick(card);
   }
 
   function handleLikeClick() {
-    onCardLike(props);
+    onCardLike(card);
   }
 
   function handleDeleteClick() {
-    onCardDelete(props);
+    onCardDelete(card);
   }
-  
+
   return (
     <li className='card'>
-      <button type='button' className={cardDeleteButtonClassName} onClick={handleDeleteClick}></button>
+      <button
+        type='button'
+        className={cardDeleteButtonClassName}
+        onClick={handleDeleteClick}
+      ></button>
       <div className='card__container'>
         <img
           src={card.link}
