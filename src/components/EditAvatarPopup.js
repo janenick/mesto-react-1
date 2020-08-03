@@ -12,6 +12,7 @@ function EditAvatarPopup(props) {
   React.useEffect(() => {
     setDisabled(true);
     setUrlError('');
+    inputRef.current.value = '';
   }, [isOpen]);
 
   React.useEffect(() => {
