@@ -1,13 +1,32 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import PopupWithForm from './PopupWithForm';
 
 function EditAvatarPopup(props) {
-  const { isOpen, onClose, onUpdateAvatar } = props;
-  const inputRef = React.useRef('');
+  const { isOpen, onClose, onUpdateAvatar, isLoading } = props;
+  const inputRef = useRef('');
+
+  const [urlError, setUrlError] = useState('');
+  const [disabled, setDisabled] = useState(true);
+  const [urlValid, setUrlValid] = useState(false);
+
+  React.useEffect(() => {
+    setDisabled(true);
+    setUrlError('');
+  }, [isOpen]);
+
+  React.useEffect(() => {
+    urlValid ? setDisabled(false) : setDisabled(true);
+  }, [urlValid, inputRef.current.value]);
 
   function handleSubmit(evt) {
     evt.preventDefault();
     onUpdateAvatar({ url: inputRef.current.value });
+  }
+
+  function validate() {
+    setUrlError(inputRef.current.validationMessage);
+
+    !inputRef.current.validity.valid ? setUrlValid(false) : setUrlValid(true);
   }
 
   return (
@@ -18,18 +37,28 @@ function EditAvatarPopup(props) {
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleSubmit}
+      disabled={disabled}
+      isLoading={isLoading}
     >
       <label htmlFor='url' className='popup__field'>
         <input
+          ref={inputRef}
           type='url'
           className='popup__input'
           id='url'
           name='url'
           placeholder='Ссылка на аватар'
           required
-          ref={inputRef}
+          onChange={validate}
         />
-        <span className='popup__input-error' id='url-error'></span>
+        <span
+          className={`popup__input-error ${
+            !urlValid && 'popup__input-error_active'
+          }`}
+          id='url-error'
+        >
+          {urlError}
+        </span>
       </label>
     </PopupWithForm>
   );

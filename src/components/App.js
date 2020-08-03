@@ -24,6 +24,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   const [isConfirmPopupOpen, setConfirmPopupOpen] = useState(false);
   const [cardToDelete, setCardToDelete] = useState({});
+  const [isLoading, setLoading] = useState();
 
   //Получить данные пользователя
   React.useEffect(() => {
@@ -112,31 +113,38 @@ function App() {
 
   //Обновить аватар
   function handleUpdateAvatar(newAvatar) {
-    api.updateUserAvatar(newAvatar).then((res) => {
-      setCurrentUser(res);
-      closeAllPopups();
-    });
+    setLoading(true);
+    api
+      .updateUserAvatar(newAvatar)
+      .then((res) => {
+        setCurrentUser(res);
+        closeAllPopups();
+      })
+      .catch((err) => console.log(`Ошибка при обновлении аватара: ${err}`))
+      .finally(() => setLoading(false));
   }
 
   //Обновить данные пользователя
   function handleUpdateUser(userData) {
+    setLoading(true);
     api
       .updateUserInfo(userData)
       .then((newUser) => setCurrentUser(newUser))
-      .catch(
-        (err) => `Ошибка при обновлении информации о пользователе: ${err}`
-      );
+      .catch((err) => `Ошибка при обновлении информации о пользователе: ${err}`)
+      .finally(() => setLoading(false));
     closeAllPopups();
   }
 
   //Добавить карточку
   function handleAddPlace(card) {
+    setLoading(true);
     api
       .addNewCard(card)
       .then((newCard) => setCards([...cards, newCard]))
       .catch((err) =>
         console.log(`Ошибка при добавлении новой карточки: ${err}`)
-      );
+      )
+      .finally(() => setLoading(false));
     closeAllPopups();
   }
 
@@ -159,11 +167,13 @@ function App() {
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
+          isLoading={isLoading}
         />
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
+          isLoading={isLoading}
         />
         <AddPlacePopup
           isOpen={isAddPlacePopupOpen}

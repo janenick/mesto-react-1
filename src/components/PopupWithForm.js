@@ -9,6 +9,8 @@ function PopupWithForm(props) {
     title,
     children,
     submitButtonText,
+    disabled,
+    isLoading,
   } = props;
 
   return (
@@ -29,9 +31,12 @@ function PopupWithForm(props) {
         </fieldset>
         <button
           type='submit'
-          className='button popup__button popup__button_submit'
+          className={`button popup__button popup__button_submit ${
+            isLoading && 'popup__button_submit_loading'
+          }`}
+          disabled={disabled}
         >
-          {submitButtonText}
+          {isLoading ? `Сохранение...` : submitButtonText}
         </button>
       </form>
     </div>
