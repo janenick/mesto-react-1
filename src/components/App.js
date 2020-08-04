@@ -46,7 +46,7 @@ function App() {
         setCards(cardData);
       })
       .catch((err) => console.log(`Ошибка при загрузке карточек: ${err}`));
-  }, [cards]);
+  }, []);
 
   //Лайк/дизлайк карточки
   function handleCardLike(card) {
@@ -66,7 +66,7 @@ function App() {
   function handleConfirm() {
     api
       .deleteCard(cardToDelete._id)
-      .then(() => setCards(cards.filter((item) => item === cardToDelete)))
+      .then(() => setCards(cards.filter((item) => item !== cardToDelete)))
       .catch((err) => console.log(`Ошибка при удалении карточки: ${err}`));
     closeAllPopups();
   }
@@ -140,7 +140,7 @@ function App() {
     setLoading(true);
     api
       .addNewCard(card)
-      .then((newCard) => setCards([...cards, newCard]))
+      .then((newCard) => setCards([newCard, ...cards]))
       .catch((err) =>
         console.log(`Ошибка при добавлении новой карточки: ${err}`)
       )
